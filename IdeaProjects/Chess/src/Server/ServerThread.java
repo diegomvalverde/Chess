@@ -12,7 +12,7 @@ import java.net.Socket;
  * GitHub: https://github.com/diegomvalverde
  * Creation date: 07/07/17.
  */
-public class ServerThread
+public class ServerThread extends Thread
 {
     private Socket Client = null;               // Reference to clients socket
     private DataInputStream Input = null;       // To read the comunication
@@ -43,7 +43,7 @@ public class ServerThread
         this.UserName = name;
     }
 
-    void run()
+    public void run()
     {
         try
         {
