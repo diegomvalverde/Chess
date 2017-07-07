@@ -94,52 +94,44 @@ public class GameGUI extends  JFrame{
     }
 
     // restart the game
-    public void reiniciarJuego()
+    private void reiniciarJuego()
     {
         Turn = 1;
         for(int i = 0; i < DIMENSIONES; i++)
         {
             for(int j=0;j<DIMENSIONES;j++)
             {
-                tableroLabels[i][j].setIcon(iconoVacio);
-                tableroLogico[i][j]=0;
+                LabelsBoard[i][j].setIcon(iconoVacio);
+                LogicBoard[i][j] = 0;
             }
         }
     }
 
-    // este metodo es la respuesta del cliente al clic del enemigo
-    public void marcar(int columna, int fila)
+    // Enemy click
+    void mark(int columna, int fila)
     {
-        // marca el tablero con num de jugador
-        tableroLogico[columna][fila]=turnoJugador;
-        // si soy el 1, marco con o que es el 2, sino con X
-        // pues es el turno del enemigo que estoy marcando
-        if (numeroJugador == 1)
-            tableroLabels[columna][fila].setIcon(iconoCirculo);
-        else
-            tableroLabels[columna][fila].setIcon(iconoEquiz);
+        // mark the board
+        LogicBoard[columna][fila] = Turn;
 
-        // pregunta si gano el enemigo
-        if(haGanado())
+        if (GamerNumber == 1)
+            LabelsBoard[columna][fila].setIcon(null);
+        else
+            LabelsBoard[columna][fila].setIcon(null);
+
+        // Ask if the enemy won
+        if(win())
         {
-            JOptionPane.showMessageDialog(null, "Ha ganado el jugador "+turnoJugador);
+            JOptionPane.showMessageDialog(null, "Ha ganado el jugador "+Turn);
 
             reiniciarJuego();
         }
-        // este fue el clic del enemigo, marco ahora mi turno
-        turnoJugador = numeroJugador;
-        jLabel1.setText("Turno del Jugador "+turnoJugador);
+        Turn = GamerNumber;
+        this.UsersLabel.setText("Turno del Jugador " + Turn);
 
 
     }
 
-    public void bomba(int col, int fila)
-    {
-        JOptionPane.showMessageDialog(this, "Generar bombas y enviarlas una " +
-                "a una al enemigo ("+col+","+fila+")");
-    }
-
-    public void clickSobreTablero(java.awt.event.MouseEvent evt)
+    private void clickSobreTablero(java.awt.event.MouseEvent evt)
     {
         // obtiene el boton
         JButton botonTemp = (JButton)evt.getComponent();
@@ -153,27 +145,27 @@ public class GameGUI extends  JFrame{
                 Integer.parseInt(identificadorBoton.substring(1+identificadorBoton.indexOf(",")));
 
         // si ya se disparo entonces nada
-        if(tableroLogico[columna][fila]!=0)
+        if(LogicBoard[columna][fila]!=0)
             return;
 
         // si es mi turno continua, si no return
-        if (numeroJugador != turnoJugador)
+        if (GamerNumber != Turn)
             return;
 
         // como es turno del cliente marca el logico con su numero
-        tableroLogico[columna][fila]=turnoJugador;
+        LogicBoard[columna][fila]=Turn;
         // si era el jugador 1 marca con x y cambia el turno a jugador 2
-        if (numeroJugador == 1)
+        if (GamerNumber == 1)
         {
 
-            tableroLabels[columna][fila].setIcon(iconoEquiz);
-            turnoJugador=2;
+            LabelsBoard[columna][fila].setIcon(null);
+            Turn=2;
         }
         else
         {
             // si era jugador 3, marca circulo y turno jugador 1
-            tableroLabels[columna][fila].setIcon(iconoCirculo);
-            turnoJugador=1;
+            LabelsBoard[columna][fila].setIcon(null);
+            Turn=1;
         }
         // muestra el turno del jugador
         jLabel1.setText("Turno del Jugador "+turnoJugador);
@@ -191,7 +183,7 @@ public class GameGUI extends  JFrame{
         }
 
         // si gano el jugador 1 lo indica
-        if(haGanado())
+        if(win())
         {
             JOptionPane.showMessageDialog(null, "Ha ganado el jugador 1");
             reiniciarJuego();
@@ -199,7 +191,7 @@ public class GameGUI extends  JFrame{
     }
 
 
-    boolean haGanado()
+    boolean win()
     {
 
         //Ganó en las filas
